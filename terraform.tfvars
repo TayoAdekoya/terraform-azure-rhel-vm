@@ -1,10 +1,10 @@
 ####################
 # Common Variables #
 ####################
-company     = "kopicloud"
-app_name    = "iac-test"
+company     = "Teecloud"
+app_name    = "rhel-test"
 environment = "dev"
-location    = "northeurope"
+location    = "US Central"
 
 ###########
 # Network #
