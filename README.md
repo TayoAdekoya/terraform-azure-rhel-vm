@@ -1,4 +1,4 @@
-#Terraform Azure RHEL VM
+# Terraform Azure RHEL VM
 
 Deploying a Red Hat Enterprise Linux (RHEL) VM in Azure using Terraform
 
