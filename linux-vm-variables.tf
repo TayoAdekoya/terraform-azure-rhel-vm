@@ -1,4 +1,3 @@
-
 variable "linux_vm1_size" {
   type        = string
   description = "Size (SKU) of the virtual machine to create"

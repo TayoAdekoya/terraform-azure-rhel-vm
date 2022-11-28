@@ -1,8 +1,3 @@
-
-provider "azurerm" {
-  features {}
-}
-
 # Generate random password
 resource "random_password" "linux-vm-password" {
   length           = 16
