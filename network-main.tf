@@ -1,11 +1,12 @@
-####################
-## Network - Main ##
-####################
+##########################
+## Azure Network - Main ##
+##########################
 
 # Create a resource group for network
 resource "azurerm_resource_group" "network-rg" {
-  name     = "linux-${lower(replace(var.app_name," ","-"))}-${var.environment}-rg"
+  name     = var.rg_name 
   location = var.location
+
   tags = {
     application = var.app_name
     environment = var.environment
@@ -14,10 +15,11 @@ resource "azurerm_resource_group" "network-rg" {
 
 # Create the network VNET
 resource "azurerm_virtual_network" "network-vnet" {
-  name                = "linux-${lower(replace(var.app_name," ","-"))}-${var.environment}-vnet"
+  name                = "linux-${var.environment}-vnet"
   address_space       = [var.network-vnet-cidr]
-  resource_group_name = azurerm_resource_group.network-rg.name
-  location            = azurerm_resource_group.network-rg.location
+  resource_group_name = var.rg_name 
+  location            = var.location
+
   tags = {
     application = var.app_name
     environment = var.environment
@@ -26,8 +28,8 @@ resource "azurerm_virtual_network" "network-vnet" {
 
 # Create a subnet for Network
 resource "azurerm_subnet" "network-subnet" {
-  name                 = "linux-${lower(replace(var.app_name," ","-"))}-${var.environment}-subnet"
+  name                 = "linux-${var.environment}-subnet"
   address_prefixes     = [var.network-subnet-cidr]
   virtual_network_name = azurerm_virtual_network.network-vnet.name
-  resource_group_name  = azurerm_resource_group.network-rg.name
+  resource_group_name  = var.rg_name 
 }

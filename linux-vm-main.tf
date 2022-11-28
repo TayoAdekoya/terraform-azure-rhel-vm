@@ -1,27 +1,33 @@
+###########################
+## Azure Linux VM - Main ##
+###########################
+
 provider "azurerm" {
   features {}
 }
 
-# creates resource group
-resource "azurerm_resource_group" "rg" {
-  name     = "${var.name_prefix}-rg"
-  location = "${var.location}"
+# Generate random password
+resource "random_password" "linux-vm-password" {
+  length           = 16
+  min_upper        = 2
+  min_lower        = 2
+  min_special      = 2
+  number           = true
+  special          = true
+  override_special = "!@#$%&"
 }
 
-# Generate a random vm name
-resource "random_string" "linux-vm-name" {
-  length  = 8
-  upper   = false
-  number  = false
-  lower   = true
-  special = false
+# creates resource group
+resource "azurerm_resource_group" "vm-rg" {
+  name     = var.rg_name
+  location = var.location
 }
 
 # Create Security Group to access linux
 resource "azurerm_network_security_group" "linux-vm-nsg" {
-  name                = "linux-${lower(var.environment)}-${random_string.linux-vm-name.result}-nsg"
-  location            = azurerm_resource_group.network-rg.location
-  resource_group_name = azurerm_resource_group.network-rg.name
+  name                = "linux-${(var.environment)}-nsg"
+  location            = var.location
+  resource_group_name = var.rg_name
 
   security_rule {
     name                       = "AllowHTTP"
@@ -48,6 +54,7 @@ resource "azurerm_network_security_group" "linux-vm-nsg" {
     source_address_prefix      = "Internet"
     destination_address_prefix = "*"
   }
+
   tags = {
     environment = var.environment
   }
@@ -55,19 +62,15 @@ resource "azurerm_network_security_group" "linux-vm-nsg" {
 
 # Associate the linux NSG with the subnet
 resource "azurerm_subnet_network_security_group_association" "linux-vm-nsg-association" {
-  depends_on=[azurerm_resource_group.network-rg]
-
   subnet_id                 = azurerm_subnet.network-subnet.id
   network_security_group_id = azurerm_network_security_group.linux-vm-nsg.id
 }
 
 # Get a Static Public IP
 resource "azurerm_public_ip" "linux-vm-ip" {
-  depends_on=[azurerm_resource_group.network-rg]
-
-  name                = "linux-${random_string.linux-vm-name.result}-ip"
-  location            = azurerm_resource_group.network-rg.location
-  resource_group_name = azurerm_resource_group.network-rg.name
+  name                = "linux-${var.environment}-ip"
+  location            = var.location
+  resource_group_name = var.rg_name
   allocation_method   = "Static"
   
   tags = { 
@@ -77,11 +80,9 @@ resource "azurerm_public_ip" "linux-vm-ip" {
 
 # Create Network Card for linux VM
 resource "azurerm_network_interface" "linux-vm-nic" {
-  depends_on=[azurerm_resource_group.network-rg]
-
-  name                = "linux-${random_string.linux-vm-name.result}-nic"
-  location            = azurerm_resource_group.network-rg.location
-  resource_group_name = azurerm_resource_group.network-rg.name
+  name                = "linux-${var.environment}-nic"
+  location            = var.location
+  resource_group_name = var.rg_name
   
   ip_configuration {
     name                          = "internal"
@@ -91,6 +92,105 @@ resource "azurerm_network_interface" "linux-vm-nic" {
   }
 
   tags = { 
+    environment = var.environment
+  }
+}
+
+# Create Linux VM with linux server
+resource "azurerm_linux_virtual_machine" "linux-vm1" {
+  count                 = 2
+  name                  = "VM1-${var.list}"
+  location              = var.location
+  resource_group_name   = var.rg_name
+  network_interface_ids = [azurerm_network_interface.linux-vm-nic.id]
+  size                  = var.linux_vm1_size
+
+  source_image_reference {
+    offer     = var.linux_vm_image_offer
+    publisher = var.linux_vm_image_publisher
+    sku       = var.rhel_8_3_sku
+    version   = "latest"
+  }
+
+  os_disk {
+    name                 = "linux-${var.environment}-disk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  computer_name  = "linux-${var.environment}-vm"
+  admin_username = var.linux_admin_username
+  admin_password = random_password.linux-vm-password.result
+
+  disable_password_authentication = false
+
+  tags = {
+    environment = var.environment
+  }
+}
+
+# Create Linux VM with linux server
+resource "azurerm_linux_virtual_machine" "linux-vm2" {
+  count                 = 2
+  name                  = "VM2-${var.list}"
+  location              = var.location
+  resource_group_name   = var.rg_name
+  network_interface_ids = [azurerm_network_interface.linux-vm-nic.id]
+  size                  = var.linux_vm2_size
+
+  source_image_reference {
+    offer     = var.linux_vm_image_offer
+    publisher = var.linux_vm_image_publisher
+    sku       = var.rhel_8_4_sku
+    version   = "latest"
+  }
+
+  os_disk {
+    name                 = "linux-${var.environment}-disk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  computer_name  = "linux-${var.environment}-vm"
+  admin_username = var.linux_admin_username
+  admin_password = random_password.linux-vm-password.result
+
+  disable_password_authentication = false
+
+  tags = {
+    environment = var.environment
+  }
+}
+
+# Create Linux VM with linux server
+resource "azurerm_linux_virtual_machine" "linux-vm3" {
+  count                 = 2
+  name                  = "VM3-${var.list}"
+  location              = var.location
+  resource_group_name   = var.rg_name
+  network_interface_ids = [azurerm_network_interface.linux-vm-nic.id]
+  size                  = var.linux_vm3_size
+
+  source_image_reference {
+    offer     = var.linux_vm_image_offer
+    publisher = var.linux_vm_image_publisher
+    sku       = var.rhel_8_5_sku
+    version   = "latest"
+  }
+
+  os_disk {
+    name                 = "linux-${var.environment}-disk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  computer_name  = "linux-${var.environment}-vm"
+  admin_username = var.linux_admin_username
+  admin_password = random_password.linux-vm-password.result
+
+  disable_password_authentication = false
+
+  tags = {
     environment = var.environment
   }
 }
