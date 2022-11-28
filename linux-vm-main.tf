@@ -1,6 +1,3 @@
-###########################
-## Azure Linux VM - Main ##
-###########################
 
 provider "azurerm" {
   features {}

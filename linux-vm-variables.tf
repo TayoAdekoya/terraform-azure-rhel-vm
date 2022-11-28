@@ -1,6 +1,3 @@
-################################
-## Azure Linux VM - Variables ##
-################################
 
 variable "linux_vm1_size" {
   type        = string
@@ -43,8 +40,9 @@ variable "rg_name" {
 }
 
 variable "list" {
-  type        = list
-  description = "list for VM counts"
+  type        = string
+  description = "list for VM counts"  
+    default   = "a-b"
 }
 
 variable "linux_admin_username" {

@@ -1,12 +1,3 @@
-##########################
-## Azure Linux - Output ##
-##########################
-
-output "linux_vm1_name" {
-  description = "Virtual Machine name"
-  value       = azurerm_linux_virtual_machine.linux-vm.name
-}
-
 output "linux_vm_ip_address" {
   description = "Virtual Machine name IP Address"
   value       = azurerm_public_ip.linux-vm-ip.ip_address
