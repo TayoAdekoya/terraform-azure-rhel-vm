@@ -2,9 +2,49 @@
 ## Azure Linux VM - Variables ##
 ################################
 
-variable "linux_vm_size" {
+variable "linux_vm1_size" {
   type        = string
   description = "Size (SKU) of the virtual machine to create"
+}
+
+variable "linux_vm2_size" {
+  type        = string
+  description = "Size (SKU) of the virtual machine to create"
+}
+
+variable "linux_vm3_size" {
+  type        = string
+  description = "Size (SKU) of the virtual machine to create"
+}
+
+variable "company" {
+  type        = string
+  description = "Name of Company"
+}
+
+variable "app_name" {
+  type        = string
+  description = "name of App"
+}
+
+variable "environment" {
+  type        = string
+  description = "Tag name for environment"
+}
+
+variable "location" {
+  type        = string
+  description = "Location of resources"
+}
+
+variable "rg_name" {
+  type        = string
+  description = "Name of Resource Group"
+}
+
+variable "list" {
+  type        = list
+  description = "list for VM counts"
 }
 
 variable "linux_admin_username" {

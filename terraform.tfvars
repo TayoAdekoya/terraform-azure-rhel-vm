@@ -1,11 +1,11 @@
 ####################
 # Common Variables #
 ####################
-company     = {"Teecloud"}
-app_name    = {"rhel-test"}
-environment = {"dev"}
-location    = {"US Central"}
-rg_name     = {"wmbqutarmrgp003"}
+company     = "Teecloud"
+app_name    = "rhel-test"
+environment = "dev"
+location    = "US Central"
+rg_name     = "wmbqutarmrgp003"
 list        = "[a,b]"
 
 ###########
