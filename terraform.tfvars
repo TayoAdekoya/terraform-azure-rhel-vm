@@ -6,7 +6,7 @@ app_name    = "rhel-test"
 environment = "dev"
 location    = "Central US"
 rg_name     = "wmbqutarmrgp003"
-sql_rg_name = "wmbqutarmrgp004"
+mysql_rg_name = "wmbqutarmrgp004"
 
 ###########
 # Network #

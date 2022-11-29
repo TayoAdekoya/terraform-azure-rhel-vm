@@ -39,9 +39,8 @@ variable "rg_name" {
 }
 
 variable "list" {
-  type        = string
   description = "list for VM counts"  
-    default   = "a-b"
+    default   = "a"
 }
 
 variable "linux_admin_username" {
